@@ -14,7 +14,12 @@ module Surveyor
 
     # Strong parameters
     def surveyor_params
-      params.permit(:survey_code, :survey_version, :section, :r, :finish, :response_set_code, :locale, :current_section, :surveyor_javascript_enabled)
+      sliced = params.slice(:survey_code, :survey_version, :section, 
+                            :finish, :response_set_code, :locale,
+                            :current_section, :surveyor_javascript_enabled,
+                            :authenticity_token, :utf8, :_method,
+                            :r)
+      sliced.permit!
     end
 
     # Actions
@@ -65,7 +70,7 @@ module Surveyor
       if @response_set
         @survey = Survey.with_sections.find_by_id(@response_set.survey_id)
         @sections = @survey.sections
-        @section = section_id_from(survey_params) ? @sections.with_includes.find(section_id_from(surveyor_params)) : @sections.with_includes.first
+        @section = section_id_from(surveyor_params) ? @sections.with_includes.find(section_id_from(surveyor_params)) : @sections.with_includes.first
         set_dependents
       else
         flash[:notice] = t('surveyor.unable_to_find_your_responses')
@@ -85,7 +90,7 @@ module Surveyor
             return redirect_with_message(surveyor.available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
           else
             flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-            redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(survyeor_params[:section]), :section => section_id_from(surveyor_params))
+            redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(surveyor_params[:section]), :section => section_id_from(surveyor_params))
           end
         end
         format.js do
