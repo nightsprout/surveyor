@@ -19,9 +19,6 @@ if ENV['RAILS_VERSION']
     # A JS runtime is required for Rails 4.0+
     gem 'therubyracer', platforms: :ruby  
     #gem 'protected_attributes', :git => 'git://github.com/rails/protected_attributes.git'
-    gem 'better_errors'
-    gem 'binding_of_caller'
-    gem 'meta_request'
   else
     fail "Unknown Rails version #{ENV['RAILS_VERSION']}"
   end
