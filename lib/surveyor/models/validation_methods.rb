@@ -20,7 +20,7 @@ module Surveyor
         end
         
         # Whitelisting attributes
-        base.send :attr_accessible, :answer, :answer_id, :rule, :message
+        #base.send :attr_accessible, :answer, :answer_id, :rule, :message
       end
 
       # Instance Methods

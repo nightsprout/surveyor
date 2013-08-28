@@ -17,7 +17,7 @@ module Surveyor
         end
 
         # Whitelisting attributes
-        base.send :attr_accessible, :survey, :survey_id, :locale, :translation
+        #base.send :attr_accessible, :survey, :survey_id, :locale, :translation
       end
 
       # Instance Methods

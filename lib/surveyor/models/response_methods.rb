@@ -17,7 +17,7 @@ module Surveyor
         base.send :include, Surveyor::ActsAsResponse # includes "as" instance method
 
         # Whitelisting attributes
-        base.send :attr_accessible, :response_set, :question, :answer, :date_value, :time_value, :response_set_id, :question_id, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :response_group, :survey_section_id
+        #base.send :attr_accessible, :response_set, :question, :answer, :date_value, :time_value, :response_set_id, :question_id, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :response_group, :survey_section_id
 
         # Class methods
         base.instance_eval do
