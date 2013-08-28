@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency('uuidtools')#, '~> 2.1')
   s.add_dependency('mustache')#, '0.99.4')
   s.add_dependency('rabl')#, '~>0.6.13')
-  s.add_dependency('protected_attributes') # SMELL remove this to provide full Rails 4 support for Strong Parameters
+  #s.add_dependency('protected_attributes') # SMELL remove this to provide full Rails 4 support for Strong Parameters
 
   s.add_development_dependency('yard')
   s.add_development_dependency('rake')#, '>= 0.9.2')
@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('launchy')#, '~> 2.0.5')
   s.add_development_dependency('capybara')#, '~> 1.1.1')
+  s.add_development_dependency('selenium-webdriver')
   s.add_development_dependency('ci_reporter')#, '1.6.6')
   s.add_development_dependency('json_spec')#, '~> 1.0.3')
 end

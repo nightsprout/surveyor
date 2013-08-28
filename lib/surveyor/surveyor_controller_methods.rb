@@ -12,6 +12,11 @@ module Surveyor
       base.send :before_filter, :set_locale
     end
 
+    # Strong parameters
+    def surveyor_params
+      params.permit(:survey_code, :survey_version, :section, :r, :finish, :response_set_code, :locale, :current_section, :surveyor_javascript_enabled)
+    end
+
     # Actions
     def new
       @surveys_by_access_code = Survey.order("created_at DESC, survey_version DESC").group_by(&:access_code)
@@ -19,11 +24,11 @@ module Surveyor
     end
 
     def create
-      surveys = Survey.where(:access_code => params[:survey_code]).order("survey_version DESC")
-      if params[:survey_version].blank?
+      surveys = Survey.where(:access_code => surveyor_params[:survey_code]).order("survey_version DESC")
+      if surveyor_params[:survey_version].blank?
         @survey = surveys.first
       else
-        @survey = surveys.where(:survey_version => params[:survey_version]).first
+        @survey = surveys.where(:survey_version => surveyor_params[:survey_version]).first
       end
       @response_set = ResponseSet.
         create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
@@ -60,7 +65,7 @@ module Surveyor
       if @response_set
         @survey = Survey.with_sections.find_by_id(@response_set.survey_id)
         @sections = @survey.sections
-        @section = section_id_from(params) ? @sections.with_includes.find(section_id_from(params)) : @sections.with_includes.first
+        @section = section_id_from(survey_params) ? @sections.with_includes.find(section_id_from(surveyor_params)) : @sections.with_includes.first
         set_dependents
       else
         flash[:notice] = t('surveyor.unable_to_find_your_responses')
@@ -69,10 +74,10 @@ module Surveyor
     end
 
     def update
-      question_ids_for_dependencies = (params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
+      question_ids_for_dependencies = (surveyor_params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
       saved = load_and_update_response_set_with_retries
 
-      return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
+      return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && surveyor_params[:finish]
 
       respond_to do |format|
         format.html do
@@ -80,14 +85,14 @@ module Surveyor
             return redirect_with_message(surveyor.available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
           else
             flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-            redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(params[:section]), :section => section_id_from(params))
+            redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(survyeor_params[:section]), :section => section_id_from(surveyor_params))
           end
         end
         format.js do
           if @response_set
             render :json => @response_set.reload.all_dependencies(question_ids_for_dependencies)
           else
-            render :text => "No response set #{params[:response_set_code]}",
+            render :text => "No response set #{surveyor_params[:response_set_code]}",
               :status => 404
           end
         end
@@ -108,13 +113,13 @@ module Surveyor
 
     def load_and_update_response_set
       ResponseSet.transaction do
-        @response_set = ResponseSet.includes(:responses => :answer).find_by(:access_code => params[:response_set_code])
+        @response_set = ResponseSet.includes(:responses => :answer).find_by(:access_code => surveyor_params[:response_set_code])
         if @response_set
           saved = true
-          if params[:r]
-            @response_set.update_from_ui_hash(params[:r])
+          if surveyor_params[:r]
+            @response_set.update_from_ui_hash(surveyor_params[:r])
           end
-          if params[:finish]
+          if surveyor_params[:finish]
             @response_set.complete!
             saved &= @response_set.save
           end
@@ -127,8 +132,8 @@ module Surveyor
     private :load_and_update_response_set
 
     def export
-      surveys = Survey.where(:access_code => params[:survey_code]).order("survey_version DESC")
-      s = params[:survey_version].blank? ? surveys.first : surveys.where(:survey_version => params[:survey_version]).first
+      surveys = Survey.where(:access_code => surveyor_params[:survey_code]).order("survey_version DESC")
+      s = surveyor_params[:survey_version].blank? ? surveys.first : surveys.where(:survey_version => surveyor_params[:survey_version]).first
       render_404 and return if s.blank?
       @survey = s.filtered_for_json
     end
@@ -156,15 +161,15 @@ module Surveyor
 
     def set_response_set_and_render_context
       @response_set = ResponseSet.includes(:responses => [:question, :answer])
-        .find_by(:access_code => params[:response_set_code])
+        .find_by(:access_code => surveyor_params[:response_set_code])
       @render_context = render_context
     end
 
      def set_locale
-      if params[:new_locale]
-        I18n.locale = params[:new_locale]
-      elsif params[:locale]
-        I18n.locale = params[:locale]
+      if surveyor_params[:new_locale]
+        I18n.locale = surveyor_params[:new_locale]
+      elsif surveyor_params[:locale]
+        I18n.locale = surveyor_params[:locale]
       else
         I18n.locale = I18n.default_locale
       end
@@ -226,7 +231,7 @@ module Surveyor
     # cf. surveyor/edit.html.haml
     # the set the session variable [:surveyor_javascript] to "enabled"
     def determine_if_javascript_is_enabled
-      if params[:surveyor_javascript_enabled] && params[:surveyor_javascript_enabled].to_s == "true"
+      if surveyor_params[:surveyor_javascript_enabled] && surveyor_params[:surveyor_javascript_enabled].to_s == "true"
         session[:surveyor_javascript] = "enabled"
       else
         session[:surveyor_javascript] = "not_enabled"
