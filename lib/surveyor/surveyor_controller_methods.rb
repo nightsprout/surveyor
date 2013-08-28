@@ -15,7 +15,7 @@ module Surveyor
     # Strong parameters
     def surveyor_params
       sliced = params.slice(:survey_code, :survey_version, :section, 
-                            :finish, :response_set_code, :locale,
+                            :finish, :response_set_code, :locale, :new_locale,
                             :current_section, :surveyor_javascript_enabled,
                             :authenticity_token, :utf8, :_method,
                             :r)
