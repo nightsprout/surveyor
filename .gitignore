@@ -20,6 +20,7 @@ pkg
 Gemfile.lock
 reports
 chromedriver.log
+*debuglog.txt
 
 ## PROJECT::SPECIFIC
 testbed
