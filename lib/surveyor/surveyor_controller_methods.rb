@@ -161,7 +161,7 @@ module Surveyor
 
     # Filters
     def get_current_user
-      @current_user = self.respond_to?(:current_user) ? self.current_user : nil
+      @current_user = self.respond_to?(:current_user) ? self.current_user.evaluations.latest : nil
     end
 
     def set_response_set_and_render_context
@@ -170,7 +170,7 @@ module Surveyor
       @render_context = render_context
     end
 
-     def set_locale
+    def set_locale
       if surveyor_params[:new_locale]
         I18n.locale = surveyor_params[:new_locale]
       elsif surveyor_params[:locale]
