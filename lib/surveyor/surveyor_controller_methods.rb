@@ -5,7 +5,7 @@ Rabl.configure {|config| config.include_json_root = false }
 module Surveyor
   module SurveyorControllerMethods
     def self.included(base)
-      base.send :before_filter, :get_current_evaluation, :only => [:new, :create]
+      base.send :before_filter, :get_current_user, :only => [:new, :create]
       base.send :before_filter, :determine_if_javascript_is_enabled, :only => [:create, :update]
       base.send :before_filter, :set_response_set_and_render_context, :only => [:edit, :show]
       base.send :layout, 'surveyor_default'
@@ -160,8 +160,8 @@ module Surveyor
     end
 
     # Filters
-    def get_current_evaluation
-      @current_user = self.respond_to?(:current_candidate) ? self.current_candidate.evaluations.latest : nil
+    def get_current_user
+      @current_user = self.respond_to?(:current_user) ? self.current_user : nil
     end
 
     def set_response_set_and_render_context
