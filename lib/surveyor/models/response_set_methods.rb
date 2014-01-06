@@ -92,7 +92,8 @@ module Surveyor
         }
       end
       def mandatory_questions_complete?
-        progress_hash[:triggered_mandatory] == progress_hash[:triggered_mandatory_completed]
+        progress = progress_hash
+        progress[:triggered_mandatory] == progress[:triggered_mandatory_completed]
       end
       def progress_hash
         qs = survey.sections_with_questions.map(&:questions).flatten
