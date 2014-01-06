@@ -28,7 +28,7 @@ module Surveyor
 
         # Derived attributes
         base.send :before_create, :generate_access_code
-        base.send :before_create, :increment_version, prepend: true
+        base.send :before_create, :increment_version
 
         # Class methods
         base.instance_eval do
