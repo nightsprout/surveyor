@@ -83,7 +83,9 @@ module Surveyor
       saved = load_and_update_response_set_with_retries
       form_valid = true
 
-      if surveyor_params[:section] || surveyor_params[:finish]
+      if surveyor_params[:section] 
+        form_valid = @response_set.section_complete?(SurveySection.find(surveyor_params[:current_section]))
+      elsif surveyor_params[:finish]
         form_valid = @response_set.mandatory_questions_complete?
       end
 

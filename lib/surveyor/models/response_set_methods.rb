@@ -105,6 +105,14 @@ module Surveyor
           :triggered_mandatory_completed => triggered.select{|q| q.mandatory? and is_answered?(q)}.compact.size
         }
       end
+      def section_complete?(section)
+        qs = sections.questions
+        ds = dependencies(qs.map(&:id))
+        triggered = qs - ds.select{ |d| !d.is_met?(self) }.map(&:question)
+        triggered_mandatory = triggered.select { |q| q.mandatory? }.compact.size
+        triggered_mandatory_completed = triggered.select{ |q| q.mandatory? && is_answered(q) }.compact.size
+        triggered_mandatory_completed == triggered_mandatory
+      end
       def is_answered?(question)
         %w(label image).include?(question.display_type) or !is_unanswered?(question)
       end
