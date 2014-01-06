@@ -81,6 +81,11 @@ module Surveyor
     def update
       question_ids_for_dependencies = (surveyor_params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
       saved = load_and_update_response_set_with_retries
+      form_valid = true
+
+      if surveyor_params[:section] || surveyor_params[:finish]
+        form_valid = @response_set.mandatory_questions_complete?
+      end
 
       return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && surveyor_params[:finish]
 
@@ -90,7 +95,12 @@ module Surveyor
             return redirect_with_message(surveyor.available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
           else
             flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-            redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(surveyor_params[:section]), :section => section_id_from(surveyor_params))
+            if form_valid
+              redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(surveyor_params[:section]), :section => section_id_from(surveyor_params))
+            else
+              flash[:notice] = t('surveyor.required_answers')
+              redirect_to surveyor.edit_my_survey_path(anchor: anchor_from(surveyor_params[:current_section]), section: surveyor_params[:current_section])
+            end
           end
         end
         format.js do
