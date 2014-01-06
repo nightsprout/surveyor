@@ -110,7 +110,7 @@ module Surveyor
         ds = dependencies(qs.map(&:id))
         triggered = qs - ds.select{ |d| !d.is_met?(self) }.map(&:question)
         triggered_mandatory = triggered.select { |q| q.mandatory? }.compact.size
-        triggered_mandatory_completed = triggered.select{ |q| q.mandatory? && is_answered(q) }.compact.size
+        triggered_mandatory_completed = triggered.select{ |q| q.mandatory? && is_answered?(q) }.compact.size
         triggered_mandatory_completed == triggered_mandatory
       end
       def is_answered?(question)
