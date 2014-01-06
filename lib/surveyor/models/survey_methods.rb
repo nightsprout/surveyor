@@ -27,8 +27,8 @@ module Surveyor
         #base.send :attr_accessible, :title, :description, :reference_identifier, :data_export_identifier, :common_namespace, :common_identifier, :css_url, :custom_class, :display_order
 
         # Derived attributes
-        base.send :before_save, :generate_access_code
-        base.send :before_save, :increment_version
+        base.send :before_create, :generate_access_code
+        base.send :before_create, :increment_version, prepend: true
 
         # Class methods
         base.instance_eval do
