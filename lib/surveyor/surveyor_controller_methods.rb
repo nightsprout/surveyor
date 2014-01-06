@@ -98,7 +98,7 @@ module Surveyor
             if form_valid
               redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(surveyor_params[:section]), :section => section_id_from(surveyor_params))
             else
-              flash[:notice] = t('surveyor.required_answers')
+              flash[:notice] = t('surveyor.questions_required')
               redirect_to surveyor.edit_my_survey_path(anchor: anchor_from(surveyor_params[:current_section]), section: surveyor_params[:current_section])
             end
           end
