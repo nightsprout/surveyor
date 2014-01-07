@@ -68,7 +68,7 @@ module Surveyor
     def edit
       # @response_set is set in before_filter - set_response_set_and_render_context
       if @response_set
-        @survey = Survey.with_sections.find_by_id(@response_set.survey_id)
+        @survey = Survey.find(@response_set.survey_id)
         @sections = @survey.sections
         @section = section_id_from(surveyor_params) ? @sections.with_includes.find(section_id_from(surveyor_params)) : @sections.with_includes.first
         set_dependents
@@ -177,7 +177,7 @@ module Surveyor
     end
 
     def set_response_set_and_render_context
-      @response_set = ResponseSet.includes(:responses => [:question, :answer])
+      @response_set = ResponseSet.includes(:responses => :answer)
         .find_by(:access_code => surveyor_params[:response_set_code])
       @render_context = render_context
     end
