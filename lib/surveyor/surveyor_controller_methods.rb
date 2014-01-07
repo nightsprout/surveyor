@@ -85,11 +85,11 @@ module Surveyor
 
       if surveyor_params[:section] 
         form_valid = @response_set.section_complete?(SurveySection.find(surveyor_params[:current_section]))
-      elsif surveyor_params[:finish]
-        form_valid = @response_set.mandatory_questions_complete?
+      elsif surveyor_params[:finish] && !@response_set.complete?
+        form_valid = false
       end
 
-      return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && surveyor_params[:finish]
+      return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if surveyor_params[:finish] && saved && form_valid
 
       respond_to do |format|
         format.html do
@@ -130,13 +130,13 @@ module Surveyor
 
     def load_and_update_response_set
       ResponseSet.transaction do
-        @response_set = ResponseSet.includes(:responses => :answer).find_by(:access_code => surveyor_params[:response_set_code])
+        @response_set = ResponseSet.includes(responses: :answer).find_by(:access_code => surveyor_params[:response_set_code])
         if @response_set
           saved = true
           if surveyor_params[:r]
             @response_set.update_from_ui_hash(surveyor_params[:r])
           end
-          if surveyor_params[:finish]
+          if surveyor_params[:finish] && @response_set.mandatory_questions_complete?
             @response_set.complete!
             saved &= @response_set.save
           end
