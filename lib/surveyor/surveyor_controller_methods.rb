@@ -18,7 +18,7 @@ module Surveyor
                             :finish, :response_set_code, :locale, :new_locale,
                             :current_section, :surveyor_javascript_enabled,
                             :authenticity_token, :utf8, :_method,
-                            :r)
+                            :r, :add_row)
       sliced.permit!
     end
 
