@@ -92,7 +92,7 @@ module Surveyor
       saved = load_and_update_response_set_with_retries
       form_valid = true
 
-      if surveyor_params[:section] 
+      if surveyor_params[:section]
         form_valid = @response_set.section_complete?(SurveySection.find(surveyor_params[:current_section]))
       elsif surveyor_params[:finish] && !@response_set.complete?
         form_valid = false
@@ -107,7 +107,7 @@ module Surveyor
           else
             flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
             if form_valid
-              anchor = anchor_from(surveyor_params[:section])
+              anchor = anchor_from(surveyor_params[:add_row])
               redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => "#{section_id_from(surveyor_params)}_#{anchor}")
             else
               flash[:notice] = t('surveyor.questions_required')
