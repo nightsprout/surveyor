@@ -34,7 +34,9 @@
                         %td= render(a.custom_renderer || '/partials/answer', :g => g, :q => q, :a => a, :f => f) unless q.display_type == "label"
                       %th= q.text_for(:post, @render_context, I18n.locale)
       - when :repeater
-        - (@response_set.count_group_responses(qs) + 1).times do |rg|
+        - group_count = @response_set.count_group_responses(qs)
+        - group_count += 1 if params[:section] == "#{@section.id}_g_#{g.id}" || group_count == 0
+        - group_count.times do |rg|
           %li
             - qs.each do |q|
               = render q.custom_renderer || "/partials/question", :g => g, :rg => rg, :q => q, :f => f
