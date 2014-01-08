@@ -92,35 +92,40 @@ module Surveyor
         }
       end
       def mandatory_questions_complete?
-        progress = progress_hash
-        progress[:triggered_mandatory] == progress[:triggered_mandatory_completed]
+        sections = survey.sections.includes(:questions)
+        sections.each do |section|
+          unless section_complete?(section)
+            return false
+          end
+        end
+        true
       end
-      def progress_hash
-        qs = survey.sections_with_questions.map(&:questions).flatten
-        ds = dependencies(qs.map(&:id))
-        triggered = qs - ds.select{|d| !d.is_met?(self)}.map(&:question)
-        { :questions => qs.compact.size,
-          :triggered => triggered.compact.size,
-          :triggered_mandatory => triggered.select{|q| q.mandatory?}.compact.size,
-          :triggered_mandatory_completed => triggered.select{|q| q.mandatory? and is_answered?(q)}.compact.size
-        }
-      end
+      # def progress_hash
+      #   qs = survey.sections_with_questions.map(&:questions).flatten
+      #   ds = dependencies(qs.map(&:id))
+      #   triggered = qs - ds.select{|d| !d.is_met?(self)}.map(&:question)
+      #   { :questions => qs.compact.size,
+      #     :triggered => triggered.compact.size,
+      #     :triggered_mandatory => triggered.select{|q| q.mandatory?}.compact.size,
+      #     :triggered_mandatory_completed => triggered.select{|q| q.mandatory? and is_answered?(q)}.compact.size
+      #   }
+      # end
       def section_complete?(section)
-        qs = section.questions
-        ds = dependencies(qs.map(&:id))
-        triggered = qs - ds.select{ |d| !d.is_met?(self) }.map(&:question)
-        triggered_mandatory = triggered.select { |q| q.mandatory? }.compact.size
-        triggered_mandatory_completed = triggered.select{ |q| q.mandatory? && is_answered?(q) }.compact.size
-        triggered_mandatory_completed == triggered_mandatory
+        section.questions.where(is_mandatory: true).where.not(display_type: 'label', pick: 'any').find_each do |q|
+          if q.triggered?(self) && is_unanswered?(q)
+            return false
+          end
+        end
+        true
       end
       def is_answered?(question)
-        %w(label image).include?(question.display_type) or !is_unanswered?(question)
+        !is_unanswered?(question)
       end
       def is_unanswered?(question)
-        if question.display_type == 'label'
+        if %w(label image).include?(question.display_type) || question.pick == 'any'
           false
         else
-          self.responses.detect{|r| r.question_id == question.id}.nil?
+          !responses.exists?(question_id: question.id)
         end
       end
       def is_group_unanswered?(group)

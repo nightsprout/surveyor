@@ -69,8 +69,17 @@ module Surveyor
       # @response_set is set in before_filter - set_response_set_and_render_context
       if @response_set
         @survey = Survey.find(@response_set.survey_id)
-        @sections = @survey.sections
-        @section = section_id_from(surveyor_params) ? @sections.with_includes.find(section_id_from(surveyor_params)) : @sections.with_includes.first
+        @sections = @survey.sections.includes(questions: 
+          [:answers, { dependency: :dependency_conditions }, { question_group: { dependency: :dependency_conditions } }])
+        if section_id_from(surveyor_params)
+          @section = @sections.includes(questions: 
+            [:answers, { dependency: :dependency_conditions }, 
+              { question_group: { dependency: :dependency_conditions } }]).find(section_id_from(surveyor_params))
+        else
+          @section = @sections.includes(questions: 
+            [:answers, { dependency: :dependency_conditions }, 
+              { question_group: { dependency: :dependency_conditions } }]).first
+        end
         set_dependents
       else
         flash[:notice] = t('surveyor.unable_to_find_your_responses')
@@ -98,10 +107,11 @@ module Surveyor
           else
             flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
             if form_valid
-              redirect_to surveyor.edit_my_survey_path(:anchor => anchor_from(surveyor_params[:section]), :section => section_id_from(surveyor_params))
+              anchor = anchor_from(surveyor_params[:section])
+              redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => "#{section_id_from(surveyor_params)}_#{anchor}")
             else
               flash[:notice] = t('surveyor.questions_required')
-              redirect_to surveyor.edit_my_survey_path(anchor: anchor_from(surveyor_params[:current_section]), section: surveyor_params[:current_section])
+              redirect_to surveyor.edit_my_survey_path(section: surveyor_params[:current_section])
             end
           end
         end
