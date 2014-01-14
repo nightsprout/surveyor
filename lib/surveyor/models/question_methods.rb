@@ -76,10 +76,10 @@ module Surveyor
       end
 
       def part_of_group?
-        !self.question_group.nil?
+        !question_group_id.nil?
       end
       def solo?
-        self.question_group.nil?
+        question_group_id.nil?
       end
 
       def text_for(position = nil, context = nil, locale = nil)
