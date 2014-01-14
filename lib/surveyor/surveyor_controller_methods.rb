@@ -50,7 +50,9 @@ module Surveyor
     def show
       # @response_set is set in before_filter - set_response_set_and_render_context
       if @response_set
-        @survey = Survey.includes({ sections: { questions: :answers } }).find(@response_set.survey.id)
+        @survey = Survey.includes({ sections: 
+          { questions: [:answers, { question_group: { dependency: :dependency_conditions } }, 
+            { dependency: :dependency_conditions }] } }).find(@response_set.survey.id)
         respond_to do |format|
           format.html #{render :action => :show}
           format.csv {
@@ -187,7 +189,7 @@ module Surveyor
     end
 
     def set_response_set_and_render_context
-      @response_set = ResponseSet.includes(:survey, { responses: [:question, :answer] })
+      @response_set = ResponseSet.includes(:survey, { responses: :answer })
         .find_by(:access_code => surveyor_params[:response_set_code])
       @render_context = render_context
     end
