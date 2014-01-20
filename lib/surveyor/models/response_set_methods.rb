@@ -122,7 +122,7 @@ module Surveyor
         !is_unanswered?(question)
       end
       def is_unanswered?(question)
-        if %w(label image).include?(question.display_type) || question.pick == 'any'
+        if %w(label image).include?(question.display_type)
           false
         else
           !responses.exists?(question_id: question.id)
