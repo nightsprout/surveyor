@@ -111,9 +111,21 @@ module Surveyor
       #   }
       # end
       def section_complete?(section)
-        section.questions.where(is_mandatory: true).where.not(display_type: 'label', pick: 'any').find_each do |q|
-          if q.triggered?(self) && is_unanswered?(q)
-            return false
+        section.questions.where(is_mandatory: true).where.not(display_type: 'label', pick: 'any').each do |q|
+          if q.triggered?(self) 
+            if q.question_group.present? && q.question_group.display_type == "repeater"
+              repeated_questions = section.questions.where(question_group_id: q.question_group.id).pluck(:id)
+              rs = responses.where(question_id: repeated_questions).group_by(&:response_group)
+              rs.keys.each do |group|
+                repeated_questions.each do |question|
+                  unless responses.exists?(response_group: group, question_id: question)
+                    return false
+                  end
+                end
+              end
+            elsif is_unanswered?(q)
+              return false
+            end
           end
         end
         true
@@ -123,9 +135,12 @@ module Surveyor
       end
       def is_unanswered?(question)
         if %w(label image).include?(question.display_type)
-          false
+          return false
         else
-          !responses.exists?(question_id: question.id)
+          rs = responses.where(question_id: question.id)
+          if rs.none?
+            return true
+          end
         end
       end
       def is_group_unanswered?(group)
