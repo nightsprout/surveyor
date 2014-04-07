@@ -111,7 +111,7 @@ module Surveyor
       #   }
       # end
       def section_complete?(section)
-        section.questions.where(is_mandatory: true).where.not(display_type: 'label', pick: 'any').each do |q|
+        section.questions.where(is_mandatory: true).where.not(display_type: 'label').each do |q|
           if q.triggered?(self) 
             if q.question_group.present? && q.question_group.display_type == "repeater"
               repeated_questions = section.questions.where(question_group_id: q.question_group.id).pluck(:id)
