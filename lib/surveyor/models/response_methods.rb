@@ -134,8 +134,6 @@ module Surveyor
           if string_value =~ /\A(?:0[1-9]|10|11|12)\/(?:0[1-9]|[1-2]\d|3[0-1])\/(?:(?:19|20)\d{2})\z/
             return true
           else
-            key = question.reference_identifier == "phq_date" ? :"today's date" : :date_of_birth
-            response_set.errors.add(key, "should be formatted as mm/dd/yyyy")
             return false
           end
         end

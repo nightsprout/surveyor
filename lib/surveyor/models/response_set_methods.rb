@@ -191,22 +191,37 @@ module Surveyor
 
             existing = Response.where(:api_id => api_id).first
             updateable_attributes = response_hash.reject { |k, v| k == 'api_id' }
+            question_ref = Question.find(updateable_attributes["question_id"]).reference_identifier
 
+                
+              
             if self.class.has_blank_value?(response_hash)
               existing.destroy if existing
             elsif existing
               if existing.question_id.to_s != updateable_attributes['question_id']
                 fail "Illegal attempt to change question for response #{api_id}."
               end
-
-              existing.update_attributes(updateable_attributes)
+              if question_ref == "phq_date" || question_ref == "phq_dob"
+                if updateable_attributes["string_value"] =~ /\A(?:0[1-9]|10|11|12)\/(?:0[1-9]|[1-2]\d|3[0-1])\/(?:(?:19|20)\d{2})\z/
+                  existing.update_attributes(updateable_attributes)
+                else
+                  key = question_ref == "phq_date" ? :"today's date" : :date_of_birth
+                  errors.add(key, "should be formatted as mm/dd/yyyy")
+                end
+              end
             else
               responses.build(updateable_attributes).tap do |r|
                 r.api_id = api_id
-                r.save
+                if question_ref == "phq_date" || question_ref == "phq_dob"
+                  if updateable_attributes["string_value"] =~ /\A(?:0[1-9]|10|11|12)\/(?:0[1-9]|[1-2]\d|3[0-1])\/(?:(?:19|20)\d{2})\z/
+                    r.save
+                  else
+                    key = question_ref == "phq_date" ? :"today's date" : :date_of_birth
+                    errors.add(key, "should be formatted as mm/dd/yyyy")
+                  end
+                end
               end
             end
-
           end
         end
       end
