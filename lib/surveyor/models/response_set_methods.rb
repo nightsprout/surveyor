@@ -222,7 +222,7 @@ module Surveyor
                     errors.add(key, "should be formatted as mm/dd/yyyy")
                   end
                 else
-                  existing.update_attributes(updateable_attributes)
+                  r.save
                 end
               end
             end
