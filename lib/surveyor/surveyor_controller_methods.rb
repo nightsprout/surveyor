@@ -107,18 +107,16 @@ module Surveyor
           if @response_set.nil?
             return redirect_with_message(surveyor.available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
           else
-            if saved && form_valid
+            if saved && form_valid && @response_set.errors.empty?
               anchor = anchor_from(surveyor_params[:add_row])
               redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => "#{section_id_from(surveyor_params)}_#{anchor}")
-            else 
+            else
               if !form_valid
                 flash[:notice] = t('surveyor.questions_required')
-              elsif !saved
-                if @response_set.errors.any?
-                  flash[:notice] = "<ul>#{@response_set.errors.full_messages.map { |msg| "<li>#{msg}</li>" }.join}</ul>".html_safe
-                else
-                  flash[:notice] = t('surveyor.unable_to_update_survey')
-                end
+              elsif @response_set.errors.any?
+                flash[:notice] = "<ul>#{@response_set.errors.full_messages.map { |msg| "<li>#{msg}</li>" }.join}</ul>".html_safe
+              else
+                flash[:notice] = t('surveyor.unable_to_update_survey')
               end
               redirect_to surveyor.edit_my_survey_path(section: surveyor_params[:current_section])
             end
@@ -153,7 +151,7 @@ module Surveyor
         if @response_set
           saved = true
           if surveyor_params[:r]
-            saved = @response_set.update_from_ui_hash(surveyor_params[:r])
+            @response_set.update_from_ui_hash(surveyor_params[:r])
           end
           if surveyor_params[:finish] && @response_set.mandatory_questions_complete?
             @response_set.complete!
