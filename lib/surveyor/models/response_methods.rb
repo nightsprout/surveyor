@@ -16,6 +16,8 @@ module Surveyor
         end
         base.send :include, Surveyor::ActsAsResponse # includes "as" instance method
 
+        base.send :before_save, :passes_validations?
+
         # Whitelisting attributes
         #base.send :attr_accessible, :response_set, :question, :answer, :date_value, :time_value, :response_set_id, :question_id, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :response_group, :survey_section_id
 
@@ -123,6 +125,20 @@ module Surveyor
 
         found = formats[answer.response_class]
         found ? datetime_value.try{|d| d.utc.strftime(found)} : as(answer.response_class)
+      end
+
+      def passes_validations?
+        if answer.validations.size == 0
+          return true
+        elsif question.reference_identifier == 'phq_date' || question.reference_identifier == 'phq_dob'
+          if string_value =~ /\A(?:0[1-9]|10|11|12)\/(?:0[1-9]|[1-2]\d|3[0-1])\/(?:(?:19|20)\d{2})\z/
+            return true
+          else
+            key = question.reference_identifier == "phq_date" ? :"today's date" : :date_of_birth
+            response_set.errors.add(key, "should be formatted as mm/dd/yyyy")
+            return false
+          end
+        end
       end
     end
   end
