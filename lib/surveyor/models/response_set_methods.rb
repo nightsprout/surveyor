@@ -208,6 +208,8 @@ module Surveyor
                   key = question_ref == "phq_date" ? :"today's date" : :date_of_birth
                   errors.add(key, "should be formatted as mm/dd/yyyy")
                 end
+              else
+                existing.update_attributes(updateable_attributes)
               end
             else
               responses.build(updateable_attributes).tap do |r|
@@ -219,6 +221,8 @@ module Surveyor
                     key = question_ref == "phq_date" ? :"today's date" : :date_of_birth
                     errors.add(key, "should be formatted as mm/dd/yyyy")
                   end
+                else
+                  existing.update_attributes(updateable_attributes)
                 end
               end
             end
