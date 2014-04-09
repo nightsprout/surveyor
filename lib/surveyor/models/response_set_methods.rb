@@ -203,7 +203,7 @@ module Surveyor
             else
               responses.build(updateable_attributes).tap do |r|
                 r.api_id = api_id
-                r.save!
+                r.save
               end
             end
 

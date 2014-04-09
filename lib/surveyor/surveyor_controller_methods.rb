@@ -153,7 +153,7 @@ module Surveyor
         if @response_set
           saved = true
           if surveyor_params[:r]
-            @response_set.update_from_ui_hash(surveyor_params[:r])
+            saved = @response_set.update_from_ui_hash(surveyor_params[:r])
           end
           if surveyor_params[:finish] && @response_set.mandatory_questions_complete?
             @response_set.complete!
