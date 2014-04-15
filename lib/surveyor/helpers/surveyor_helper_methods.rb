@@ -26,8 +26,8 @@ module Surveyor
         end
       end
       # Helper for displaying warning/notice/error flash messages
-      def flash_messages(types)
-        types.map{|type| content_tag(:div, "#{flash[type]}".html_safe, :class => type.to_s)}.join.html_safe
+      def flash_messages
+        flash.map{ |type, message| content_tag(:div, "#{message}".html_safe, :class => type) }.join.html_safe
       end
       # Section: dependencies, menu, previous and next
       def dependency_explanation_helper(question,response_set)

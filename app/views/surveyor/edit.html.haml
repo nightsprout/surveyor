@@ -1,7 +1,7 @@
 #surveyor
-  - unless (types = flash.keys.select{|k| %w(notice, error, warning).include?(k)}).blank?
+  - unless flash.blank?
     .surveyor_flash
-      = flash_messages(types)
+      = flash_messages
       .close
   = semantic_form_for(@response_set, :as => :r, :url => surveyor.update_my_survey_path(current_section: @section.id), :html => {:method => :put, :id => "survey_form", :class => @survey.custom_class}) do |f|
 
