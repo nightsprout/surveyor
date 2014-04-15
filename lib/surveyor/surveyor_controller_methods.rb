@@ -112,7 +112,7 @@ module Surveyor
               redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => "#{section_id_from(surveyor_params)}_#{anchor}")
             else
               if @response_set.errors.any?
-                flash[:notice] = "<ul>#{@response_set.errors.full_messages.map { |msg| "<li>#{msg}</li>" }.join}</ul>".html_safe
+                flash[:notice] = @response_set.errors.full_messages.join("\n")
               elsif !form_valid
                 flash[:notice] = t('surveyor.questions_required')
               else
