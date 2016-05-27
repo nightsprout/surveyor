@@ -7,7 +7,9 @@ require 'ci/reporter/rake/rspec'
 
 ###### RSPEC
 
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |task|
+  task.rspec_opts = "-f documentation"
+end
 
 RSpec::Core::RakeTask.new(:rcov) do |spec|
   spec.rcov = true
@@ -94,7 +96,7 @@ namespace :ci do
 
   task :env do
     ENV['CI_REPORTS'] = 'reports/spec-xml'
-    ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format nested"
+#    ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format documentation"
   end
 
   Cucumber::Rake::Task.new(:cucumber, 'Run features using the CI profile') do |t|
