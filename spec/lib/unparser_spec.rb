@@ -5,6 +5,17 @@ describe Surveyor::Unparser do
     @survey = Survey.new(:title => "Simple survey", :description => "very simple")
     @section = @survey.sections.build(:title => "Simple section")
   end
+
+  describe "Surveyor::Unparser#hash_diff" do
+    it "accurately replicates the behavior of Hash.diff in Rails 4.0" do
+      # cf. http://apidock.com/rails/Hash/diff
+
+      Surveyor::Unparser.hash_diff({1 => 2}, {1 => 2}).should == {}
+      Surveyor::Unparser.hash_diff({1 => 2}, {1 => 3}).should == {1 => 2}
+      Surveyor::Unparser.hash_diff({}, {1 => 2}).should == {1 => 2}
+      Surveyor::Unparser.hash_diff({1 => 2, 3 => 4}, {1 => 2}).should == {3 => 4}      
+    end
+  end
   
   it "should unparse a basic survey, section, and question" do
     q1 = @section.questions.build(:text => "What is your favorite color?", :reference_identifier => 1, :pick => :one)
@@ -35,6 +46,8 @@ dsl
   end
   
   it "should unparse groups" do
+    pending
+    
     q3 = @section.questions.build(:text => "Happy?")    
     a31 = q3.answers.build(:text => "Yes", :question => q3)
     a32 = q3.answers.build(:text => "Maybe", :question => q3)

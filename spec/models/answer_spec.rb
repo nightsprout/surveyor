@@ -130,7 +130,7 @@ describe Answer do
     it "#text_for with #display_type == image" do
       answer.text = "rails.png"
       answer.display_type = :image
-      answer.text_for.should == %(<img alt="Rails" src="/images/rails.png" />)
+      [%(<img src="/images/rails.png" alt="Rails" />), %(<img alt="Rails" src="/images/rails.png" />)].should include answer.text_for
     end
     it "#text_for with #display_type == hidden_label" do
       answer.text = "Red"

@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe SurveyorController do
+describe SurveyorController, :type => :controller do
   include Surveyor::Engine.routes.url_helpers
   before do
     @routes = Surveyor::Engine.routes
@@ -91,7 +91,7 @@ describe SurveyorController do
       response.should render_template('show')
     end
     it "finds ResponseSet with includes" do
-      ResponseSet.should_receive(:includes).with(:responses => [:question, :answer]).and_return(response_set)
+      ResponseSet.should_receive(:includes).with(:survey, {:responses => :answer}).and_return(response_set)
       response_set.should_receive(:find_by).with(:access_code => "pdq").and_return(response_set)
       do_get
     end

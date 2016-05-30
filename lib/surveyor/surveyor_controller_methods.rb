@@ -109,7 +109,14 @@ module Surveyor
           else
             if saved && form_valid && @response_set.errors.empty?
               anchor = anchor_from(surveyor_params[:add_row])
-              redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => "#{section_id_from(surveyor_params)}_#{anchor}")
+
+              if section_id_from(surveyor_params).present? or anchor.present?
+                section = "#{section_id_from(surveyor_params)}_#{anchor}"
+              else
+                section = nil
+              end
+
+              redirect_to surveyor.edit_my_survey_path(:anchor => anchor, :section => section)
             else
               if @response_set.errors.any?
                 flash[:notice] = @response_set.errors.full_messages.join("\n")

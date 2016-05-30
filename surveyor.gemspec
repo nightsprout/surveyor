@@ -17,7 +17,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency('rails', '~> 4.0')
+  s.add_dependency('rails', '~> 4')
+  s.add_dependency('protected_attributes')
   # '< 5.0' is to be conservative; once 5.0 comes out we should test with it and
   # allow it if it works.
   s.add_dependency('haml')#, '>= 3.1.3', '< 5.0')
@@ -31,9 +32,10 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('yard')
   s.add_development_dependency('rake')#, '>= 0.9.2')
-  s.add_development_dependency('rspec-rails')#, '~> 2.9.0')
+  s.add_development_dependency('test-unit')
+  s.add_development_dependency('rspec-rails', '~> 2.9.0')
   s.add_development_dependency('bundler')#, '~> 1.0', '>= 1.0.21')
-  s.add_development_dependency('factory_girl')#, '~> 2.1.2')
+  s.add_development_dependency('factory_girl', '~> 2.1.2')
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('cucumber-rails')#, '~> 1.1.1')
 

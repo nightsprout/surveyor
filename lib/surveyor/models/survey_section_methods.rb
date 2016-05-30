@@ -19,8 +19,11 @@ module Surveyor
           @@validations_already_included = true
         end
 
+        # Attributes
+        base.send :attr_protected, :api_id, :created_at, :updated_at
+        
         # Whitelisting attributes
-        #base.send :attr_accessible, :survey, :survey_id, :title, :description, :reference_identifier, :data_export_identifier, :common_namespace, :common_identifier, :display_order, :custom_class
+        base.send :attr_accessible, :survey, :survey_id, :title, :description, :reference_identifier, :data_export_identifier, :common_namespace, :common_identifier, :display_order, :custom_class
       end
 
       # Instance Methods

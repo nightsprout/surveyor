@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# encoding: utf-8
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Question do
@@ -178,7 +178,7 @@ describe Question do
     it "#text_for with #display_type == image" do
       question.text = "rails.png"
       question.display_type = :image
-      question.text_for.should == %(<img alt="Rails" src="/images/rails.png" />)
+      [%(<img src="/images/rails.png" alt="Rails" />), %(<img alt="Rails" src="/images/rails.png" />)].should include question.text_for
     end
     it "#help_text_for"
     it "#text_for preserves strings" do
