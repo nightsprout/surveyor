@@ -14,14 +14,8 @@ if ENV['RAILS_VERSION']
     gem 'rails', '~> 3.2.0'
     # A JS runtime is required for Rails 3.1+
     gem 'therubyracer', '~> 0.10.2'
-  when /4.0$/
+  when /4.0$/, /4.1$/, /4.2$/
     gem 'rails', '~> 4.0.0'
-    # A JS runtime is required for Rails 4.0+
-    gem 'therubyracer', platforms: :ruby  
-    gem 'selenium-webdriver', group: :test
-    gem 'protected_attributes', :git => 'git://github.com/rails/protected_attributes.git'
-  when /4.2$/
-    gem 'rails', '~> 4.2'
     # A JS runtime is required for Rails 4.0+
     gem 'therubyracer', platforms: :ruby  
     gem 'selenium-webdriver', group: :test
