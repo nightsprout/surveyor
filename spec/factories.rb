@@ -40,6 +40,7 @@ FactoryGirl.define do
     s.display_order             {FactoryGirl.generate :survey_section_display_order}
     s.reference_identifier      {"demographics"}
     s.data_export_identifier    {"demographics"}
+    s.custom_class              {"section_test_class"}
   end
 
   sequence(:question_display_order){|n| n }

@@ -3,7 +3,7 @@
     .surveyor_flash
       = flash_messages(types)
       .close
-  = semantic_form_for(@response_set, :as => :r, :url => surveyor.update_my_survey_path, :html => {:id => "survey_form", :class => @survey.custom_class}) do |f|
+  = semantic_form_for(@response_set, :as => :r, :url => surveyor.update_my_survey_path(response_set_code: @response_set.access_code, survey_code: @survey.access_code), :html => {:id => "survey_form", :class => @survey.custom_class}) do |f|
     .survey_title= @survey.title
     - @survey.sections.each do |section|
       = div_for section do
