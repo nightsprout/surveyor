@@ -402,6 +402,48 @@ describe ResponseSet, "with mandatory questions" do
     #@response_set.progress_hash.should == {:questions => 5, :triggered => 5, :triggered_mandatory => 5, :triggered_mandatory_completed => 5}
   end
 end
+describe ResponseSet, "with mandatory repeater questions" do
+  before(:each) do
+    @survey = FactoryGirl.create(:survey)
+    @section = FactoryGirl.create(:survey_section, :survey => @survey)
+    @response_set = FactoryGirl.create(:response_set, :survey => @survey)
+  end
+
+  def generate_responses(count, responded_count = 0, mandatory = nil)
+    count.times do |i|
+      g = FactoryGirl.create(:question_group, :display_type => "repeater")
+      qs = FactoryGirl.create_list(:question, count, :survey_section => @section, :is_mandatory => (mandatory == "mandatory"), :question_group => g)
+      as = []
+      qs.each do |q|
+        as << FactoryGirl.create(:answer, :question => q, :response_class => "answer")
+      end
+
+      qs[0...responded_count].each_index do |i|
+        q = qs[i]
+        a = as[i]
+        @response_set.responses << FactoryGirl.create(:response, :question => q, :answer => a)
+      end
+    end
+  end
+  it "should report progress without mandatory questions" do
+    generate_responses(3, 2)
+    @response_set.mandatory_questions_complete?.should be_true
+  end
+  it "should report progress with all mandatory questions complete" do
+    generate_responses(3, 3, "mandatory")
+    @response_set.mandatory_questions_complete?.should be_true
+  end
+  it "should report progress with some mandatory questions incomplete" do
+    generate_responses(3, 2, "mandatory")
+    @response_set.mandatory_questions_complete?.should be_false
+  end
+  it "should ignore labels and images" do
+    generate_responses(3, 3, "mandatory")
+    FactoryGirl.create(:question, :survey_section => @section, :display_type => "label", :is_mandatory => true)
+    FactoryGirl.create(:question, :survey_section => @section, :display_type => "image", :is_mandatory => true)
+    @response_set.mandatory_questions_complete?.should be_true
+  end
+end
 describe ResponseSet, "with mandatory, dependent questions" do
   before(:each) do
     @survey = FactoryGirl.create(:survey)
