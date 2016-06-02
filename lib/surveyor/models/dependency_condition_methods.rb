@@ -23,10 +23,10 @@ module Surveyor
         base.send :include, Surveyor::ActsAsResponse # includes "as" instance method
 
         # Attributes
-        base.send :attr_protected, :created_at, :updated_at
+        #base.send :attr_protected, :created_at, :updated_at
         
         # Whitelisting attributes
-        base.send :attr_accessible, :dependency, :question, :answer, :dependency_id, :rule_key, :question_id, :operator, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :question_reference, :answer_reference
+        #base.send :attr_accessible, :dependency, :question, :answer, :dependency_id, :rule_key, :question_id, :operator, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :question_reference, :answer_reference
 
         # Class methods
         base.instance_eval do

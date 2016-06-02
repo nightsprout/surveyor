@@ -24,10 +24,10 @@ module Surveyor
         end
 
         # Attributes
-        base.send :attr_protected, :access_code, :api_id, :created_at, :updated_at, :completed_at
-
+        #base.send :attr_protected, :access_code, :api_id, :created_at, :updated_at, :completed_at
+        
         # Whitelisting attributes
-        base.send :attr_accessible, :title, :description, :reference_identifier, :data_export_identifier, :common_namespace, :common_identifier, :css_url, :custom_class, :display_order
+        #base.send :attr_accessible, :title, :description, :reference_identifier, :data_export_identifier, :common_namespace, :common_identifier, :css_url, :custom_class, :display_order
 
         # Derived attributes
         base.send :before_create, :generate_access_code
