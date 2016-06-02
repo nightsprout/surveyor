@@ -4,16 +4,6 @@
 
 if ENV['RAILS_VERSION']
   case ENV['RAILS_VERSION']
-  when /3.0$/
-    gem 'rails', '~> 3.0.15'
-  when /3.1$/
-    gem 'rails', '~> 3.1.0'
-    # A JS runtime is required for Rails 3.1+
-    gem 'therubyracer', '~> 0.10.2'
-  when /3.2$/
-    gem 'rails', '~> 3.2.0'
-    # A JS runtime is required for Rails 3.1+
-    gem 'therubyracer', '~> 0.10.2'
   when /4.0$/, /4.1$/, /4.2$/
     gem 'rails', '~> 4.0.0'
     # A JS runtime is required for Rails 4.0+
@@ -21,7 +11,7 @@ if ENV['RAILS_VERSION']
     gem 'selenium-webdriver', group: :test
     gem 'protected_attributes', :git => 'git://github.com/rails/protected_attributes.git'
   else
-    fail "Unknown Rails version #{ENV['RAILS_VERSION']}"
+    fail "Unsupported Rails version #{ENV['RAILS_VERSION']}"
   end
 else 
   fail "ENV['RAILS_VERSION'] not set"
