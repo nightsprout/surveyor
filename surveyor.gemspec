@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency('rails', '~> 4')
-  s.add_dependency('protected_attributes')
+  
   # '< 5.0' is to be conservative; once 5.0 comes out we should test with it and
   # allow it if it works.
   s.add_dependency('haml')#, '>= 3.1.3', '< 5.0')
@@ -45,7 +45,8 @@ Gem::Specification.new do |s|
   # was being applied to the same adapter as the sqlite monkeypatch.
   # 1.0.1 is the last known-good version.
   s.add_development_dependency('database_cleaner', '= 1.0.1')
-
+  s.add_runtime_dependency('protected_attributes')
+  s.add_development_dependency('protected_attributes')
   s.add_development_dependency('launchy')#, '~> 2.0.5')
   s.add_development_dependency('capybara')#, '~> 1.1.1')
   s.add_dependency('ci_reporter', '1.6.6')
