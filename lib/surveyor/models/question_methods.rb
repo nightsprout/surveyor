@@ -10,7 +10,7 @@ module Surveyor
         base.send :has_many, :answers, :dependent => :destroy # it might not always have answers
         base.send :has_one, :dependency, :dependent => :destroy
         base.send :belongs_to, :correct_answer, :class_name => "Answer", :dependent => :destroy
-
+        
         # Scopes
         base.instance_eval {default_scope ->{order "#{base.quoted_table_name}.display_order ASC"}}
 

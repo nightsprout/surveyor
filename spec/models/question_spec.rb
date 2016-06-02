@@ -4,6 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Question do
   let(:question){ FactoryGirl.create(:question) }
 
+  it "test test" do
+    question.answers
+  end
+  
   context "when creating" do
     it "is invalid without #text" do
       question.text = nil

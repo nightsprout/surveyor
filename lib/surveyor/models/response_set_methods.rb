@@ -114,14 +114,10 @@ module Surveyor
         section.questions.where(is_mandatory: true).where.not(display_type: 'label').each do |q|
           if q.triggered?(self) 
             if q.question_group.present? && q.question_group.display_type == "repeater"
-              repeated_questions = section.questions.where(question_group_id: q.question_group.id).pluck(:id)
-              rs = responses.where(question_id: repeated_questions).group_by(&:response_group)
-              rs.keys.each do |group|
-                repeated_questions.each do |question|
-                  unless responses.exists?(response_group: group, question_id: question)
-                    return false
-                  end
-                end
+              repeated_question_ids = section.questions.where(question_group_id: q.question_group.id).pluck(:id)
+              rs = responses.where(question_id: repeated_question_ids)
+              unless rs.count == repeated_question_ids.count
+                return false
               end
             elsif is_unanswered?(q)
               return false
