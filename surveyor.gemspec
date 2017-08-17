@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "surveyor/version"
+$:.push File.expand_path('../lib', __FILE__)
+require 'surveyor/version'
 
 Gem::Specification.new do |s|
   s.name = %q{surveyor}
   s.version = Surveyor::VERSION
 
-  s.authors = ["Brian Chamberlain", "Mark Yoon"]
+  s.authors = ['Brian Chamberlain', 'Mark Yoon']
   s.email = %q{yoon@northwestern.edu}
   s.homepage = %q{http://github.com/NUBIC/surveyor}
   s.post_install_message = %q{Thanks for installing surveyor! The time has come to run the surveyor generator and migrate your database, even if you are upgrading.}
@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency('rails', '~> 4')
-  
+  s.add_dependency('rails', '~> 5')
+
   # '< 5.0' is to be conservative; once 5.0 comes out we should test with it and
   # allow it if it works.
   s.add_dependency('haml')#, '>= 3.1.3', '< 5.0')

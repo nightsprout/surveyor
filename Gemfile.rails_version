@@ -4,15 +4,18 @@
 
 if ENV['RAILS_VERSION']
   case ENV['RAILS_VERSION']
+  when /5.0$/
+    gem 'rails', '~> 5.0.0'
+    gem 'therubyracer', platforms: :ruby
   when /4.0$/, /4.1$/, /4.2$/
     gem 'rails', '~> 4.0.0'
     # A JS runtime is required for Rails 4.0+
-    gem 'therubyracer', platforms: :ruby  
+    gem 'therubyracer', platforms: :ruby
     gem 'selenium-webdriver', group: :test
     gem 'protected_attributes', :git => 'git://github.com/rails/protected_attributes.git'
   else
     fail "Unsupported Rails version #{ENV['RAILS_VERSION']}"
   end
-else 
+else
   fail "ENV['RAILS_VERSION'] not set"
 end
